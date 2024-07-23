@@ -42,8 +42,6 @@ services:
         volumes:
             - db_data:/var/lib/mysql
         restart: always
-        networks:
-            - ${COMPOSE_NETWORK_NAME}
 
     mailhog:
         image: mailhog/mailhog
