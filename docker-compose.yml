@@ -50,8 +50,8 @@ services:
         image: mailhog/mailhog
         restart: unless-stopped
         ports:
-            - "8025:8025"
-            - "1025:1025"
+            - "8025:8025" # web ui
+            - "1025:1025" # SMTP server
 
     memcached:
         build:
@@ -62,8 +62,21 @@ services:
             TZ: "Europe/Moscow"
 
     sphinx:
-        image: registry.gitlab.com/bitrix-docker/images/sphinx:latest
+        build:
+            context: dockerfiles
+            dockerfile: sphinx.Dockerfile
         restart: always
+        ports:
+            -   "9306:9306"
+        volumes:
+            - ./config/sphinx/sphinx.conf/etc/sphinxsearch/sphinx.conf
+            - sphinx_data:/var/lib/sphinx/data
+            - ./config/sphinx:/app/conf
+            - ./data/sphinx/run:/app/run
+            - ./data/sphinx/index:/app/index
+            - ./data/sphinx/dicts:/app/dicts
+            - ./data/sphinx/synonyms:/app/synonyms
+            - ./logs/sphinx:/app/logs
         depends_on:
             - mysql
         environment:
@@ -71,6 +84,7 @@ services:
 
 volumes:
     db_data:
+    sphinx_data:
 
 networks:
     bitrix:
