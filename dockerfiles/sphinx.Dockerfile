@@ -1,4 +1,6 @@
-FROM ubuntu:latest
+FROM ubuntu:16.04
+
+ARG APP_ENV=dev
 
 RUN apt-get update \
     && apt-get -y install \
@@ -19,7 +21,9 @@ RUN add-apt-repository ppa:builds/sphinxsearch-rel22 \
 RUN ln -sf /dev/stdout /var/log/sphinxsearch/searchd.log \
     && ln -sf /dev/stderr /var/log/sphinxsearch/query.log
 
-COPY ../config/sphinx/start.sh /start.sh
+COPY dockerfiles/start.sh /start.sh
+
+RUN chmod +x /start.sh
 
 VOLUME ["/etc/sphinxsearch"]
 VOLUME ["/var/lib/sphinxsearch/data"]

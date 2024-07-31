@@ -61,30 +61,24 @@ services:
         environment:
             TZ: "Europe/Moscow"
 
-    sphinx:
+    sphinxsearch:
+        container_name: sphinxsearch
         build:
-            context: dockerfiles
-            dockerfile: sphinx.Dockerfile
-        restart: always
+            context: .
+            dockerfile: dockerfiles/sphinx.Dockerfile
         ports:
-            -   "9306:9306"
+            - "9306:9306"
+            - "9312:9312"
         volumes:
-            - ./config/sphinx/sphinx.conf/etc/sphinxsearch/sphinx.conf
-            - sphinx_data:/var/lib/sphinx/data
-            - ./config/sphinx:/app/conf
-            - ./data/sphinx/run:/app/run
-            - ./data/sphinx/index:/app/index
-            - ./data/sphinx/dicts:/app/dicts
-            - ./data/sphinx/synonyms:/app/synonyms
-            - ./logs/sphinx:/app/logs
-        depends_on:
-            - mysql
+        - ./config/sphinx/sphinx.conf:/etc/sphinxsearch/sphinx.conf
+        - sphinx:/var/lib/sphinxsearch/data
         environment:
-            TZ: "Europe/Moscow"
+            APP_ENV: dev
 
 volumes:
     db_data:
-    sphinx_data:
+    sphinx:
+        driver: "local"
 
 networks:
     bitrix:
